@@ -11,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +18,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode
 @Table(name = "tb_category")
 public class Category implements Serializable {
@@ -35,6 +33,11 @@ public class Category implements Serializable {
 
     @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private Instant updatedAt;
+
+    public Category(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public void setId(Long id) {
         this.id = id;
