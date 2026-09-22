@@ -26,6 +26,8 @@ public class PruductServiceIT {
     private Long nonExistingId;
     private Long countTotalProducts;
 
+    
+
     @BeforeEach
     void setUp() throws Exception {
         existingId = 1L;

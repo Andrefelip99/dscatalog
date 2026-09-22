@@ -57,53 +57,80 @@ public class ProductResourceTests {
         doThrow(ResourceNotFoundException.class).when(service).delete(nonExistingId);
         doThrow(DatabaseException.class).when(service).delete(dependentId);
     }
-        
+
     @Test
     public void updateShouldReturnProductDTOWhenIdExists() throws Exception {
 
         String jsonBody = objectMapper.writeValueAsString(productDTO);
         mockMvc.perform(put("/products/{id}", existingId)
-            .content(jsonBody)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.name").exists())
-            .andExpect(jsonPath("$.description").exists());
-    
+                .content(jsonBody)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.name").exists())
+                .andExpect(jsonPath("$.description").exists());
+
     }
 
     @Test
     public void updateShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
-            String jsonBody = objectMapper.writeValueAsString(productDTO);
+        String jsonBody = objectMapper.writeValueAsString(productDTO);
         mockMvc.perform(put("/products/{id}", nonExistingId)
-            .content(jsonBody)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNotFound());
+                .content(jsonBody)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     public void findAllShouldReturnPage() throws Exception {
         mockMvc.perform(get("/products")
-    .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+                .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 
     @Test
     public void findByIdShouldReturnProductWhenIdExists() throws Exception {
         mockMvc.perform(get("/products/{id}", existingId)
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.name").exists())
-            .andExpect(jsonPath("$.description").exists());
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.name").exists())
+                .andExpect(jsonPath("$.description").exists());
     }
 
     @Test
     public void findByIdShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
         mockMvc.perform(get("/products/{id}", nonExistingId)
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNotFound());
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
-        
+
+    @Test
+    public void deleteShouldReturnNoContentWhenIdExists() throws Exception {
+        mockMvc.perform(delete("/products/{id}", existingId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void deleteShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
+        mockMvc.perform(delete("/products/{id}", nonExistingId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void insertShouldReturnProductDTOCreated() throws Exception {
+        String jsonBody = objectMapper.writeValueAsString(productDTO);
+        mockMvc.perform(post("/products")
+                .content(jsonBody)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.name").exists())
+                .andExpect(jsonPath("$.description").exists());
+    }
+
 }
