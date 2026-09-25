@@ -6,6 +6,8 @@ import java.util.Set;
 
 import com.devsuperior.dscatalog.entities.User;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,10 +15,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
-
+    
     private Long id;
+    @NotBlank(message = "Campo Obrigatorio")
     private String firstName;
     private String lastName;
+    @Email(message = "Use um email valido")
     private String email;
 
     Set<RoleDTO> roles = new HashSet<>();
