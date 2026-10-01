@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.security.autoconfigure.SecurityAutoConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
@@ -25,7 +26,7 @@ import com.devsuperior.dscatalog.tests.Factory;
 
 import tools.jackson.databind.ObjectMapper;
 
-@WebMvcTest(ProductResource.class)
+@WebMvcTest(value = ProductResource.class, excludeAutoConfiguration = { SecurityAutoConfiguration.class })
 public class ProductResourceTests {
     @Autowired
     private MockMvc mockMvc;
@@ -36,9 +37,12 @@ public class ProductResourceTests {
     private Long existingId;
     private Long nonExistingId;
     private Long dependentId;
+    
 
     @Autowired
     private ObjectMapper objectMapper;
+
+
 
     @BeforeEach
     void setUp() throws Exception {
@@ -46,10 +50,12 @@ public class ProductResourceTests {
         page = new PageImpl<>(List.of(productDTO));
         existingId = 1L;
         nonExistingId = 2L;
+        dependentId = 3L;
 
         when(service.findAllPaged(ArgumentMatchers.any())).thenReturn(page);
         when(service.findById(existingId)).thenReturn(productDTO);
         when(service.findById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
+        when(service.insert(any())).thenReturn(productDTO);
         when(service.update(eq(existingId), any())).thenReturn(productDTO);
         when(service.update(eq(nonExistingId), any())).thenThrow(ResourceNotFoundException.class);
 

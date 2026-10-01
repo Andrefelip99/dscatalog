@@ -4,13 +4,11 @@ import java.io.Serializable;
 
 import com.devsuperior.dscatalog.entities.Category;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 public class CategoryDTO implements Serializable {
@@ -23,5 +21,12 @@ public class CategoryDTO implements Serializable {
     this.id = entity.getId();
     this.name = entity.getName();
   }
+
+  public CategoryDTO(Long id, String name) {
+    this.id = id;
+    this.name = name;
+  }
+
+  
 
 }
