@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.devsuperior.dscatalog.dto.ProductDTO;
+import com.devsuperior.dscatalog.projections.ProductProjection;
 import com.devsuperior.dscatalog.services.ProductService;
 
 import jakarta.validation.Valid;
@@ -27,10 +29,13 @@ public class ProductResource {
 
 	@Autowired
 	private ProductService service;
-	
+
 	@GetMapping
-	public ResponseEntity<Page<ProductDTO>> findAll(Pageable pageable) {
-		Page<ProductDTO> list = service.findAllPaged(pageable);
+	public ResponseEntity<Page<ProductDTO>> findAll(
+			@RequestParam(value = "name", defaultValue = "") String name,
+			@RequestParam(value = "categoryId", defaultValue = "") String categoryId,
+			Pageable pageable) {
+		Page<ProductDTO> list = service.findAllPaged(name, categoryId, pageable);
 		return ResponseEntity.ok().body(list);
 	}
 
@@ -39,7 +44,7 @@ public class ProductResource {
 		ProductDTO dto = service.findById(id);
 		return ResponseEntity.ok().body(dto);
 	}
-	
+
 	@PostMapping
 	public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductDTO dto) {
 		dto = service.insert(dto);
@@ -49,7 +54,7 @@ public class ProductResource {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<ProductDTO> update( @PathVariable Long id, @Valid @RequestBody ProductDTO dto) {
+	public ResponseEntity<ProductDTO> update(@PathVariable Long id, @Valid @RequestBody ProductDTO dto) {
 		dto = service.update(id, dto);
 		return ResponseEntity.ok().body(dto);
 	}
@@ -59,4 +64,4 @@ public class ProductResource {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-} 
+}
