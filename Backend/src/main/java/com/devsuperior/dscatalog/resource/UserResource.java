@@ -22,6 +22,8 @@ import com.devsuperior.dscatalog.dto.UserInsertDTO;
 import com.devsuperior.dscatalog.dto.UserUpdateDTO;
 import com.devsuperior.dscatalog.services.UserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/users")
 public class UserResource {
@@ -43,9 +45,15 @@ public class UserResource {
 		return ResponseEntity.ok().body(dto);
 	}
 	
+	@GetMapping(value = "/me")
+	@PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
+	public ResponseEntity<UserDTO> findMe () {
+		UserDTO dto = service.findMe();
+		return ResponseEntity.ok().body(dto);
+	}
+	
 	@PostMapping
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-	public ResponseEntity<UserDTO> insert(@RequestBody UserInsertDTO dto) {
+	public ResponseEntity<UserDTO> insert(@RequestBody @Valid  UserInsertDTO dto) {
 		UserDTO newDto = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(newDto.getId()).toUri();
